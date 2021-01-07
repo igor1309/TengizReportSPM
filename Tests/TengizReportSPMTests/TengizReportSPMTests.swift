@@ -11,5 +11,20 @@ final class TengizReportSPMTests: XCTestCase {
 
     static var allTests = [
         ("testExample", testExample),
+        ("testTengizReportSPMReportsReadable", testTengizReportSPMReportsReadable)
     ]
+
+    enum TestErrors: Error {
+        case noFile(String)
+        case emptyContent
+    }
+
+    func testTengizReportSPMReportsReadable() throws {
+        for filename in filenames {
+            guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
+            guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.emptyContent}
+
+            XCTAssertNotEqual(contents, "", "Report file content is empty")
+        }
+    }
 }
