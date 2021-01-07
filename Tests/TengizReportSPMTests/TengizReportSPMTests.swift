@@ -1,28 +1,24 @@
 import XCTest
 @testable import TengizReportSPM
 
-final class TengizReportSPMTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(TengizReportSPM().text, "Hello, World!")
-    }
+enum TestErrors: Error {
+    case noFile(String)
+}
 
-    enum TestErrors: Error {
-        case noFile(String)
-        // case noFileContent(String)
-    }
-
-    func contentsOf(_ filename: String) throws -> String {
-        guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
+extension String {
+    func contentsOf() throws -> String {
+        guard let filepath = Bundle.module.path(forResource: self, ofType: "txt") else { throw TestErrors.noFile(self) }
         return try String(contentsOfFile: filepath)
     }
+
+}
+
+final class TengizReportSPMTests: XCTestCase {
 
     func testTengizReportSPMReportTextFilessReadable() throws {
         try filenames
             .forEach {
-                XCTAssertNotEqual(try contentsOf($0), "", "Can't read Report file content")
+                XCTAssertNotEqual(try $0.contentsOf(), "", "Can't read Report file content")
             }
     }
 
@@ -30,7 +26,7 @@ final class TengizReportSPMTests: XCTestCase {
         let sampleContents = ReportContent.sampleContents
 
         for (filename, report) in zip(filenames, sampleContents) {
-            let contents = try contentsOf(filename)
+            let contents = try filename.contentsOf()
             let reportContent = contents.splitReportContent()
 
             XCTAssertFalse(reportContent.hasError, "Errors in splitting report content")
@@ -49,7 +45,7 @@ final class TengizReportSPMTests: XCTestCase {
         let sampleContents = ReportContent.sampleContents.reversed()
 
         for (filename, report) in zip(filenames, sampleContents) {
-            let contents = try contentsOf(filename)
+            let contents = try filename.contentsOf()
             let reportContent = contents.splitReportContent()
 
             XCTAssertNotEqual(reportContent.headerString, report.headerString, "Header split error")
@@ -60,9 +56,9 @@ final class TengizReportSPMTests: XCTestCase {
 
     func testHeaderTokenization() throws {
         let headerTokens = try filenames
-            .compactMap(contentsOf)
             .flatMap {
-                $0.splitReportContent()
+                try $0.contentsOf()
+                    .splitReportContent()
                     .headerString
                     .tokenizeReportHeader()
             }
@@ -75,11 +71,16 @@ final class TengizReportSPMTests: XCTestCase {
             }
     }
 
+    func testGroupTokenization() throws {
+        #warning("Groups!! & Footer")
+    }
+
     func testFooterTokenization() throws {
         let footerTokens = try filenames
-            .compactMap(contentsOf)
             .flatMap {
-                $0.splitReportContent()
+                try $0
+                    .contentsOf()
+                    .splitReportContent()
                     .footerString
                     .tokenizeReportFooter()
             }
@@ -90,10 +91,6 @@ final class TengizReportSPMTests: XCTestCase {
             .forEach { token, sample in
                 XCTAssertEqual(token, sample, "Footer tokenization error")
             }
-    }
-
-    func testGroupTokenization() throws {
-        #warning("Groups!! & Footer")
     }
 
     func testRubliKopeikiConversion() {
