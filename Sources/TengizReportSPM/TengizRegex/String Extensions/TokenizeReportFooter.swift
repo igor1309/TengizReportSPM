@@ -8,10 +8,14 @@
 import Foundation
 
 public extension String {
+
     // MARK: - Tokenize Report Footer
 
     func tokenizeReportFooter() -> [Tokens.FooterToken] {
-        let lines = self.components(separatedBy: "\n").filter { !$0.isEmpty }
+        let lines = self
+            .cleanReport()
+            .components(separatedBy: "\n")
+            .filter { !$0.isEmpty }
 
         return lines.compactMap { line -> Tokens.FooterToken? in
 

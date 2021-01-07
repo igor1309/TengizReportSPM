@@ -20,10 +20,10 @@ final class TengizReportSPMTests: XCTestCase {
     }
 
     func testTengizReportSPMReportTextFilessReadable() throws {
-        for filename in filenames {
-            let contents = try contentsOf(filename)
-            XCTAssertNotEqual(contents, "", "Report file content is empty")
-        }
+        try filenames
+            .forEach {
+                XCTAssertNotEqual(try contentsOf($0), "", "Can't read Report file content")
+            }
     }
 
     func testSplitReportContent() throws {
@@ -59,35 +59,48 @@ final class TengizReportSPMTests: XCTestCase {
     }
 
     func testHeaderTokenization() throws {
-        let allHeaderTokens = Tokens.HeaderToken.allHeaderTokens
+        let headerTokens = try filenames
+            .compactMap(contentsOf)
+            .flatMap {
+                $0.splitReportContent()
+                    .headerString
+                    .tokenizeReportHeader()
+            }
 
-        for (filename, header) in zip(filenames, allHeaderTokens) {
-            let contents = try contentsOf(filename)
-            let reportContent = contents.splitReportContent()
+        let sampleTokens = Tokens.HeaderToken.allHeaderTokens.flatMap { $0 }
 
-            #warning("cleanReport before tokenization but after splitReportContent")
-            // .cleanReport()
-            let tokenizedHeader = reportContent.headerString.tokenizeReportHeader()
-            XCTAssertEqual(tokenizedHeader, header, "Header tokenization error")
-
-        }
+        zip(headerTokens, sampleTokens)
+            .forEach { token, sample in
+                XCTAssertEqual(token, sample, "Header tokenization error")
+            }
     }
 
     func testFooterTokenization() throws {
-        let allFooterTokens = Tokens.FooterToken.allFooterTokens
+        let footerTokens = try filenames
+            .compactMap(contentsOf)
+            .flatMap {
+                $0.splitReportContent()
+                    .footerString
+                    .tokenizeReportFooter()
+            }
 
-        for (filename, footer) in zip(filenames, allFooterTokens) {
-            let contents = try contentsOf(filename)
-            let reportContent = contents.splitReportContent()
+        let sampleTokens = Tokens.FooterToken.allFooterTokens.flatMap { $0 }
 
-            #warning("cleanReport before tokenization but after splitReportContent")
-            // .cleanReport()
-            let tokenizedFooter = reportContent.footerString.tokenizeReportFooter()
-            XCTAssertEqual(tokenizedFooter, footer, "Footer tokenization error")
-        }
+        zip(footerTokens, sampleTokens)
+            .forEach { token, sample in
+                XCTAssertEqual(token, sample, "Footer tokenization error")
+            }
     }
 
     func testGroupTokenization() throws {
         #warning("Groups!! & Footer")
+    }
+
+    func testRubliKopeikiConversion() {
+        NumberSample.rubliKopeikiSamples
+            .forEach {
+                XCTAssertEqual($0.result, $0.source.rubliIKopeikiToDouble(),
+                               "rubliIKopeikiToDouble conversion error")
+            }
     }
 }

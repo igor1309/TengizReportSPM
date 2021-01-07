@@ -7,12 +7,17 @@
 
 import Foundation
 
-struct LineFooterToken {
-    let line: String
-    let token: Tokens.FooterToken
+public struct LineFooterToken {
+    public let line: String
+    public let token: Tokens.FooterToken
+
+    public init(line: String, token: Tokens.FooterToken) {
+        self.line = line
+        self.token = token
+    }
 }
 
-extension Tokens.FooterToken {
+public extension Tokens.FooterToken {
     static var allFooterTokens: [[Tokens.FooterToken]] {
         [LineFooterToken.lineFooterTokens202006,
          LineFooterToken.lineFooterTokens202007,
@@ -23,7 +28,7 @@ extension Tokens.FooterToken {
     }
 }
 
-extension LineFooterToken {
+public extension LineFooterToken {
     static var lineFooterTokens202006: [LineFooterToken] {
         [LineFooterToken(line: "ИТОГ всех расходов за месяц:    92.531р15к",
                          token: .expensesTotal("ИТОГ всех расходов за месяц", 92_531.15)),

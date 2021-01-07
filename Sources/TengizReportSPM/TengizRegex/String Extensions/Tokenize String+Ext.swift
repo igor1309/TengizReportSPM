@@ -37,6 +37,7 @@ public extension String {
     // MARK: - Tokenize Report Header
 
     func tokenizeReportHeader() -> [Tokens.HeaderToken] {
+        let cleanHeader = self.cleanReport()
 
         let headerCompanyPattern = #"(?<=Название объекта:\s).*"#
         let headerMonthPattern = #"[А-Яа-я]+\d{4}"#
@@ -44,16 +45,16 @@ public extension String {
         let headerItemPattern = headerItemTitlePattern + #":[А-Яа-я ]*\d+(\.\d{3})*"#
 
         let company: Tokens.HeaderToken? = {
-            guard let companyString = self.firstMatch(for: headerCompanyPattern) else { return nil }
+            guard let companyString = cleanHeader.firstMatch(for: headerCompanyPattern) else { return nil }
             return .company(companyString)
         }()
 
         let month: Tokens.HeaderToken? = {
-            guard let monthString = self.firstMatch(for: headerMonthPattern) else { return nil }
+            guard let monthString = cleanHeader.firstMatch(for: headerMonthPattern) else { return nil }
             return .month(monthString.trimmingCharacters(in: .whitespaces))
         }()
 
-        let tail: String = self.replaceMatches(for: headerMonthPattern, withString: "")
+        let tail: String = cleanHeader.replaceMatches(for: headerMonthPattern, withString: "")
 
         let headerItems: [Tokens.HeaderToken] = tail
             .listMatches(for: headerItemPattern)
