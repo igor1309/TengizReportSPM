@@ -9,11 +9,6 @@ final class TengizReportSPMTests: XCTestCase {
         XCTAssertEqual(TengizReportSPM().text, "Hello, World!")
     }
 
-    static var allTests = [
-        ("testExample", testExample),
-        ("testTengizReportSPMReportsReadable", testTengizReportSPMReportsReadable)
-    ]
-
     enum TestErrors: Error {
         case noFile(String)
         case emptyContent
