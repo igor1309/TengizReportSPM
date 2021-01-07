@@ -63,7 +63,7 @@ final class TengizReportSPMTests: XCTestCase {
                     .tokenizeReportHeader()
             }
 
-        let sampleTokens = Tokens.HeaderToken.allHeaderTokens.flatMap { $0 }
+        let sampleTokens = Tokens.HeaderToken.allHeaderTokens
 
         zip(headerTokens, sampleTokens)
             .forEach { token, sample in

@@ -1,3 +1,10 @@
+//
+//  Regex String+Ext.swift
+//
+//
+//  Created by Igor Malyarov on 25.12.2020.
+//
+
 import Foundation
 
 public extension String {

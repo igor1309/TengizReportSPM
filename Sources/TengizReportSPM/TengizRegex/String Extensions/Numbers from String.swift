@@ -1,6 +1,6 @@
 //
-//  Conversion String+Ext.swift
-//  TextViewApp
+//  Numbers from String.swift
+//  
 //
 //  Created by Igor Malyarov on 25.12.2020.
 //

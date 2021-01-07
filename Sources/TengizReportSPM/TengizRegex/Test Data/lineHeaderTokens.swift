@@ -7,23 +7,37 @@
 
 import Foundation
 
-struct LineHeaderToken {
-    let line: String
-    let token: Tokens.HeaderToken
+public struct LineHeaderToken {
+    public let line: String
+    public let token: Tokens.HeaderToken
+
+    public init(line: String, token: Tokens.HeaderToken) {
+        self.line = line
+        self.token = token
+    }
 }
 
-extension Tokens.HeaderToken {
-    static var allHeaderTokens: [[Tokens.HeaderToken]] {
+public extension Tokens.HeaderToken {
+    static var allHeaderTokens: [Tokens.HeaderToken] {
         [LineHeaderToken.lineHeaderTokens202006,
          LineHeaderToken.lineHeaderTokens202007,
          LineHeaderToken.lineHeaderTokens202008,
          LineHeaderToken.lineHeaderTokens202009,
          LineHeaderToken.lineHeaderTokens202010,
-         LineHeaderToken.lineHeaderTokens202011].map { $0.map(\.token) }
+         LineHeaderToken.lineHeaderTokens202011].map { $0.map(\.token) }.flatMap { $0 }
     }
 }
 
-extension LineHeaderToken {
+public extension LineHeaderToken {
+    static var allLineHeaderTokens: [LineHeaderToken] {
+        [LineHeaderToken.lineHeaderTokens202006,
+         LineHeaderToken.lineHeaderTokens202007,
+         LineHeaderToken.lineHeaderTokens202008,
+         LineHeaderToken.lineHeaderTokens202009,
+         LineHeaderToken.lineHeaderTokens202010,
+         LineHeaderToken.lineHeaderTokens202011].flatMap { $0 }
+    }
+
     static var lineHeaderTokens202006: [LineHeaderToken] {
         [LineHeaderToken(line: "Название объекта: Саперави Аминьевка",
                          token: .company("Саперави Аминьевка")),
