@@ -11,27 +11,26 @@ final class TengizReportSPMTests: XCTestCase {
 
     enum TestErrors: Error {
         case noFile(String)
-        case noFileContent(String)
+        // case noFileContent(String)
     }
 
-    func testTengizReportSPMReportsReadable() throws {
+    func contentsOf(_ filename: String) throws -> String {
+        guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
+        return try String(contentsOfFile: filepath)
+    }
+
+    func testTengizReportSPMReportTextFilessReadable() throws {
         for filename in filenames {
-            guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
-
-            guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
-
+            let contents = try contentsOf(filename)
             XCTAssertNotEqual(contents, "", "Report file content is empty")
         }
     }
 
     func testSplitReportContent() throws {
-        let contents = ReportContent.reportContents
+        let sampleContents = ReportContent.sampleContents
 
-        for (filename, report) in zip(filenames, contents) {
-            guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
-
-            guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
-
+        for (filename, report) in zip(filenames, sampleContents) {
+            let contents = try contentsOf(filename)
             let reportContent = contents.splitReportContent()
 
             XCTAssertFalse(reportContent.hasError, "Errors in splitting report content")
@@ -47,38 +46,23 @@ final class TengizReportSPMTests: XCTestCase {
     /// Make sure you not testing empty properties in testSplitReportContent by reversing sample data to compare to
     /// - Throws: error if can't find file or file contents is empty
     func testSplitReportContentReversed() throws {
-        let contents = ReportContent.reportContents.reversed()
+        let sampleContents = ReportContent.sampleContents.reversed()
 
-        for (filename, report) in zip(filenames, contents) {
-            guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
-
-            guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
-
+        for (filename, report) in zip(filenames, sampleContents) {
+            let contents = try contentsOf(filename)
             let reportContent = contents.splitReportContent()
-            
+
             XCTAssertNotEqual(reportContent.headerString, report.headerString, "Header split error")
             XCTAssertNotEqual(reportContent.groups, report.groups, "Groups split error")
             XCTAssertNotEqual(reportContent.footerString, report.footerString, "Footer split error")
         }
     }
 
-    func splitReportContent(ofFilename filename: String) throws -> ReportContent {
-        guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
-
-        let contents = try String(contentsOfFile: filepath)
-        // guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
-
-        return contents.splitReportContent()
-    }
-
     func testHeaderTokenization() throws {
         let allHeaderTokens = Tokens.HeaderToken.allHeaderTokens
 
         for (filename, header) in zip(filenames, allHeaderTokens) {
-            guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
-
-            guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
-
+            let contents = try contentsOf(filename)
             let reportContent = contents.splitReportContent()
 
             #warning("cleanReport before tokenization but after splitReportContent")
@@ -93,10 +77,7 @@ final class TengizReportSPMTests: XCTestCase {
         let allFooterTokens = Tokens.FooterToken.allFooterTokens
 
         for (filename, footer) in zip(filenames, allFooterTokens) {
-            guard let filepath = Bundle.module.path(forResource: filename, ofType: "txt") else { throw TestErrors.noFile(filename) }
-
-            guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
-
+            let contents = try contentsOf(filename)
             let reportContent = contents.splitReportContent()
 
             #warning("cleanReport before tokenization but after splitReportContent")

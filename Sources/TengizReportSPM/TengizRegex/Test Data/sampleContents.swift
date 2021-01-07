@@ -8,7 +8,7 @@
 import Foundation
 
 public extension ReportContent {
-    static var reportContents: [ReportContent] {
+    static var sampleContents: [ReportContent] {
         [ReportContent.reportContent202006,
          ReportContent.reportContent202007,
          ReportContent.reportContent202008,
