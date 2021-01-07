@@ -54,6 +54,8 @@ final class TengizReportSPMTests: XCTestCase {
 
             guard let contents = try? String(contentsOfFile: filepath) else { throw TestErrors.noFileContent(filepath) }
 
+            let reportContent = contents.splitReportContent()
+            
             XCTAssertNotEqual(reportContent.headerString, report.headerString, "Header split error")
             XCTAssertNotEqual(reportContent.groups, report.groups, "Groups split error")
             XCTAssertNotEqual(reportContent.footerString, report.footerString, "Footer split error")
