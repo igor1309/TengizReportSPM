@@ -42,6 +42,11 @@ public enum Tokens {
             case tbd
             case error
         }
+
+        public init(source: String, symbol: Symbol) {
+            self.source = source
+            self.symbol = symbol
+        }
     }
 
 }
