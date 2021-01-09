@@ -9,21 +9,29 @@ import Foundation
 
 public struct ReportContent: Equatable {
 
-    public var headerString: String
-    public var groups: [String]
-    public var footerString: String
+    public var header: String
+    public var body: [String]
+    public var footer: String
 
     public var errorMessage = ""
     public var hasError: Bool { !errorMessage.isEmpty }
 
-    public init(headerString: String, groups: [String], footerString: String, errorMessage: String = "") {
-        self.headerString = headerString
-        self.groups = groups
-        self.footerString = footerString
+    public init(header: String, body: [String], footer: String, errorMessage: String = "") {
+        self.header = header
+        self.body = body
+        self.footer = footer
         self.errorMessage = errorMessage
     }
 
-    public static let empty = ReportContent(headerString: "",
-                                            groups: [],
-                                            footerString: "")
+    public static let empty = ReportContent(header: "",
+                                            body: [],
+                                            footer: "")
 }
+
+public extension ReportContent {
+    var printStr: String {
+        let all = [header] + body + [footer]
+        return all.joined(separator: "\n" + String(repeating: "#", count: 120) + "\n")
+    }
+}
+

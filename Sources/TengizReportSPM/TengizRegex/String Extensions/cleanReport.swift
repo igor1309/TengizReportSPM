@@ -13,8 +13,8 @@ public extension String {
         // make some cleaning & fixes
         self.clearWhitespacesAndNewlines()
             // fix one special line
-            .replaceMatches(for: "\nФОТ Бренд, логистика, бухгалтерия",
-                            withString: "\n2. ФОТ Бренд, логистика, бухгалтерия")
+            .replaceMatches(for: #"(?m)^ФОТ Бренд, логистика, бухгалтерия"#,
+                            withString: "2. ФОТ Бренд, логистика, бухгалтерия")
             .replaceMatches(for: "Итого-",
                             withString: "Итого ")
             // remove optionality from rubli-kopeiki making rubliKopeikiPattern and kopeikiPatterm simpler

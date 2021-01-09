@@ -21,23 +21,24 @@ public extension String {
 
         let company: Tokens.HeaderToken? = {
             guard let companyString = cleanHeader.firstMatch(for: headerCompanyPattern) else { return nil }
-            return .company(companyString)
+            return .company(source: self, name: companyString)
         }()
 
         let month: Tokens.HeaderToken? = {
             guard let monthString = cleanHeader.firstMatch(for: headerMonthPattern) else { return nil }
-            return .month(monthString.trimmingCharacters(in: .whitespaces))
+            return .month(source: self, monthStr: monthString.trimmingCharacters(in: .whitespaces))
         }()
 
         let tail: String = cleanHeader.replaceMatches(for: headerMonthPattern, withString: "")
 
         let headerItems: [Tokens.HeaderToken] = tail
             .listMatches(for: headerItemPattern)
-            .compactMap {
-                guard let title = $0.firstMatch(for: headerItemTitlePattern) else { return nil }
+            .map {
+                guard let title = $0.firstMatch(for: headerItemTitlePattern) else { return .error(source: $0) }
                 let cleanTitle = title.trimmingCharacters(in: .whitespaces)
-                guard let number = $0.extractNumber() else { return nil }
-                return .headerItem(cleanTitle, number)
+                guard let number = $0.extractNumber() else { return .error(source: $0) }
+
+                return .item(source: $0, title: cleanTitle, value: number)
             }
 
         return [company, month].compactMap { $0 } + headerItems

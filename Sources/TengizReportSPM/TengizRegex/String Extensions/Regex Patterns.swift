@@ -12,12 +12,12 @@ public extension String {
     // MARK: - Regular Expression Patterns
 
     ///  (?m) - MULTILINE mode on
-    // static let groupPattern = #"(?m)^[А-Яа-я][^\n]*\n(^\d\d?\..*\n+)+ИТОГ:.*"#
-    private static let groupHeaderPattern = #"^[А-Яа-я][^\n]*\n"#
+    private static let bodyHeaderPattern = #"^[А-Яа-я][^\n]*\n"#
     private static let itemLine = #"(^\d\d?\..*\n+)"#
     /// matching lines like `"-10.000 за перерасход питание персонала в июле"`
     static let itemCorrectionLine = #"^-\d{1,3}(?:\.\d{3})*.*"#
-    static let groupPattern = #"(?m)"# + groupHeaderPattern + #"("# + itemLine + #"|("# + itemCorrectionLine + #"\n))+ИТОГ:.*"#
+    // static let bodyPattern = #"(?m)^[А-Яа-я][^\n]*\n(^\d\d?\..*\n+)+ИТОГ:.*"#
+    static let bodyPattern = #"(?m)"# + bodyHeaderPattern + #"("# + itemLine + #"|("# + itemCorrectionLine + #"\n))+ИТОГ:.*"#
     /// matching lines starting like "3. Электричество" or "12.Интернет"
     static let itemTitlePattern = #"^[1-9]\d?\.[^\d\n]+"#
     static let itemFullLineWithDigitsPattern = #"(?m)"# + itemTitlePattern + #"\d+.*"#
@@ -31,7 +31,7 @@ public extension String {
     static let itemWithPlusPattern = itemTitlePattern + numbersWithPlusPattern
     /// pattern to match `"200.000 (за август) +400.000 (за сентябрь)"` or `"7.701+4.500"`
     static let numbersWithPlusPattern = itemNumberPattern + #"(?:\s*\([^\)]+\)\s*)?\+"# + itemNumberPattern + #"(?:\s*\([^\)]+\)\s*)?"#
-    static let groupHeaderFooterTitlePattern = #"^[А-Яа-я][А-Яа-я ]+(?=:)"#
+    static let bodyHeaderFooterTitlePattern = #"^[А-Яа-я][А-Яа-я ]+(?=:)"#
     static let percentagePattern = #"\d+(\.\d+)?%"#
 
 }
