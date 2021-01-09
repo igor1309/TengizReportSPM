@@ -7,18 +7,18 @@
 
 import Foundation
 
-public extension String {
+public extension ReportContent {
 
-    func splitReportContent() -> ReportContent {
-
+    init(string: String) {
         let headerPattern = #"(?m)(^(.*)\n)+?(?=Статья расхода:)"#
         let footerPattern = #"(?m)^ИТОГ всех расходов за месяц.*\n(^.*\n)*"#
         let columnTitleRowPattern = #"(?m)^Статья расхода:\s*Сумма расхода:\s*План %\s*Факт %\s*\n"#
         let bodyPattern = #"(?m)(?:^[А-Яа-я ]+:.*$)(?:\n.*$)+?\nИТОГ:.*"#
 
-        let header = self.firstMatch(for: headerPattern) ?? "error getting header"
-
-        let body = self
+        let header = string.firstMatch(for: headerPattern) ?? "error getting header"
+        let footer = string.firstMatch(for: footerPattern) ?? "error getting footer"
+        
+        let body = string
             // cut header
             .replaceMatches(for: headerPattern, withString: "")
             // cut footer
@@ -26,13 +26,10 @@ public extension String {
             // delete column title row
             .replaceMatches(for: columnTitleRowPattern, withString: "")
             .listMatches(for: bodyPattern)
-
-        let footer = self.firstMatch(for: footerPattern) ?? "error getting footer"
+        
+        #warning("finish with error message")
         let errorMessage = ""
 
-        return ReportContent(header: header,
-                             body: body,
-                             footer: footer,
-                             errorMessage: errorMessage)
+        ReportContent.init(header: header, body: body, footer: footer, errorMessage: errorMessage)
     }
 }
