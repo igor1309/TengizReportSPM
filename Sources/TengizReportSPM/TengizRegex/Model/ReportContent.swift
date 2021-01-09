@@ -7,6 +7,12 @@
 
 import Foundation
 
+public extension String {
+    func splitReportContent() -> ReportContent {
+        ReportContent(string: self)
+    }
+}
+
 public struct ReportContent: Equatable {
 
     public var header: String
