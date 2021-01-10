@@ -22,6 +22,8 @@ public struct ReportContent: Equatable {
     public var errorMessage = ""
     public var hasError: Bool { !errorMessage.isEmpty }
 
+    public static let empty = ReportContent(header: "", body: [], footer: "")
+
     public init(header: String, body: [String], footer: String, errorMessage: String = "") {
         self.header = header
         self.body = body
@@ -29,15 +31,13 @@ public struct ReportContent: Equatable {
         self.errorMessage = errorMessage
     }
 
-    public static let empty = ReportContent(header: "", body: [], footer: "")
-}
-
-public extension ReportContent {
     var printStr: String {
         let all = [header] + body + [footer]
         return all.joined(separator: "\n" + String(repeating: "#", count: 120) + "\n")
     }
+}
 
+public extension ReportContent {
     init(string: String) {
         let headerPattern = #"(?m)(^(.*)\n)+?(?=Статья расхода:)"#
         let footerPattern = #"(?m)^ИТОГ всех расходов за месяц.*\n(^.*\n)*"#

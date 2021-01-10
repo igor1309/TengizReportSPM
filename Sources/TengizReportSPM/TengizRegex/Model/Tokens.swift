@@ -7,13 +7,42 @@
 
 import Foundation
 
+public protocol TokenSymbol {}
+extension Tokens.HeaderToken.Symbol: TokenSymbol {}
+extension Tokens.BodyToken.Symbol: TokenSymbol {}
+extension Tokens.FooterToken.Symbol: TokenSymbol {}
+
+public struct Token<Symbol: TokenSymbol> {
+    public let source: String
+    public let symbol: Symbol
+
+    public init(source: String, symbol: Symbol) {
+        self.source = source
+        self.symbol = symbol
+    }
+}
+
+public extension Token where Symbol == Tokens.BodyToken.Symbol {
+    static let empty = Token(source: "", symbol: .empty)
+}
+
 public enum Tokens {
 
-    public enum HeaderToken: Hashable {
-        case company(source: String, name: String)
-        case month(source: String, monthStr: String)
-        case item(source: String, title: String, value: Double)
-        case error(source: String)
+    public struct HeaderToken: Equatable {
+        public let source: String
+        public let symbol: Symbol
+
+        public enum Symbol: Hashable, Equatable {
+            case company(name: String)
+            case month(monthStr: String)
+            case item(title: String, value: Double)
+            case error
+        }
+
+        public init(source: String, symbol: Symbol) {
+            self.source = source
+            self.symbol = symbol
+        }
     }
 
     public struct BodyToken: Equatable {
@@ -50,79 +79,3 @@ public enum Tokens {
     }
 
 }
-
-extension Tokens.HeaderToken: Equatable {}
-
-public extension Tokens.HeaderToken {
-//    var source: String {
-//        // MARK: - full header string is present in .company() token
-//        switch token {
-//            case let .company(source, _):
-//                return source
-//            default: return nil
-//        }
-//    }
-
-    var printStr: String {
-        switch self {
-            case let .company(source, name):
-                return "source: \"\(source)\"\ncompany: \"\(name)\""
-
-            case let .month(source, month):
-                return "source: \"\(source)\"\nmonth: \"\(month)\""
-
-            case let .item(source, title, value):
-                return "source: \"\(source)\"\n\"\(title)\": \(value)"
-
-            case .error(let source):
-                return "source: \"\(source)\"\n"
-        }
-    }
-}
-
-public extension Tokens.BodyToken.Symbol {
-    var printStr: String {
-        switch self {
-            case let .item(title, number, comment):
-                let commentString = (comment == nil || (comment?.isEmpty ?? false)) ? "" : " comment: \"\(comment!)\""
-                return "item: title: \"\(title)\" number: \(number)\(commentString)"
-
-            case let .header(title, number1, number2):
-                let number1String = number1 == nil ? "" : String(number1!)
-                let number2String = number2 == nil ? "" : String(number2!)
-                return "header: title: \(title) number: \(number1String) \(number2String)"
-
-            case let .footer(title, number):
-                let numberString = number == nil ? "" : String(number!)
-                return "footer: title: \(title) number: \(numberString)"
-
-            case .empty:
-                return "EMPTY"
-        }
-    }
-}
-
-public extension Tokens.FooterToken.Symbol {
-    var printStr: String {
-        switch self {
-            case let .total(title, number):
-                return "total: title: \"\(title)\" number: \(number)"
-
-            case let .expensesTotal(title, number):
-                return "expensesTotal: title: \"\(title)\" number: \(number)"
-
-            case let .openingBalance(title, number):
-                return "openingBalance: title: \"\(title)\" number: \(number)"
-
-            case let .balance(title, number1, number2):
-                return "balance: title: \"\(title)\" number1: \(number1) number2: \(number2)"
-
-            case .tbd:
-                return "TBD"
-
-            case .error:
-                return "ERROR"
-        }
-    }
-}
-
