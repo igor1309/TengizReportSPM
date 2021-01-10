@@ -7,10 +7,14 @@
 
 import Foundation
 
+public typealias HeaderSymbol = Tokens.HeaderToken.Symbol
+public typealias BodySymbol = Tokens.BodyToken.Symbol
+public typealias FooterSymbol = Tokens.FooterToken.Symbol
+
 public protocol TokenSymbol {}
-extension Tokens.HeaderToken.Symbol: TokenSymbol {}
-extension Tokens.BodyToken.Symbol: TokenSymbol {}
-extension Tokens.FooterToken.Symbol: TokenSymbol {}
+extension HeaderSymbol: TokenSymbol {}
+extension BodySymbol: TokenSymbol {}
+extension FooterSymbol: TokenSymbol {}
 
 public struct Token<Symbol: TokenSymbol> {
     public let source: String
@@ -19,6 +23,16 @@ public struct Token<Symbol: TokenSymbol> {
     public init(source: String, symbol: Symbol) {
         self.source = source
         self.symbol = symbol
+    }
+}
+
+public protocol StringInitializable {
+    init(string: String)
+}
+
+extension Token: StringInitializable where Symbol: StringInitializable {
+    public init(string: String) {
+        self.init(source: string, symbol: Symbol(string: string))
     }
 }
 

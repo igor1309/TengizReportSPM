@@ -42,25 +42,34 @@ final class TengizReportSPMTests: XCTestCase {
         }
     }
 
-    func testHeaderTokenizationOfSamples() {
-        let tokens = Tokens.HeaderToken.allHeaderTokens
-            .compactMap { sample -> [Tokens.HeaderToken]? in
-                switch sample {
-                    case let .company(source: source, name: _):
-                        return source.tokenizeReportHeader()
+    func testHeaderSampleSources() throws {
+        let headersInSamples = Tokens.HeaderToken.allHeaderTokens.map(\.source)
 
-                    case .month(source: _, monthStr: _),
-                         .item(source: _, title: _, value: _),
-                         .error(source: _):
-                        return nil
-                }
+        let headersInFiles = try filenames
+            .flatMap { filename in
+                try filename
+                    .contentsOf()
+                    .cleanReport()
+                    .splitReportContent()
+                    .header
+                    .replaceMatches(for: #"\t"#, withString: String.delimiter)
+                    .replaceMatches(for: #"\n"#, withString: String.delimiter)
+                    .components(separatedBy: String.delimiter)
             }
-            .flatMap { $0 }
+            .filter { !$0.isEmpty }
 
-        let sampleTokens = Tokens.HeaderToken.allHeaderTokens
+        XCTAssertEqual(headersInSamples, headersInFiles, "ERROR: header in samples and file are different")
 
-        zip(tokens, sampleTokens)
-            .forEach { token, sample in
+        zip(headersInSamples, headersInFiles)
+            .forEach { sample, header in
+                XCTAssertEqual(sample, header, "ERROR: header in samples and file are different")
+            }
+    }
+
+    func testHeaderTokenizationOfSamples() {
+        Tokens.HeaderToken.allHeaderTokens
+            .forEach { sample in
+                let token = Tokens.HeaderToken(string: sample.source)
                 XCTAssertEqual(token, sample, "Header tokenization error")
             }
     }
@@ -76,14 +85,19 @@ final class TengizReportSPMTests: XCTestCase {
                     .tokenizeReportHeader()
             }
 
-        let sampleTokens = Tokens.HeaderToken.allHeaderTokens
+        let samples = Tokens.HeaderToken.allHeaderTokens
+        XCTAssertEqual(tokens, samples, "Header tokenization error")
 
-        zip(tokens, sampleTokens)
+        let reversedSampls = Array(Tokens.HeaderToken.allHeaderTokens.reversed())
+        XCTAssertNotEqual(tokens, reversedSampls, "Header tokenization error")
+
+        zip(tokens, samples)
             .forEach { token, sample in
                 XCTAssertEqual(token, sample, "Header tokenization error")
             }
     }
 
+    /*
     func testTransformLineToBodyItem() {
         LineBodyToken.allSignificantLineBodyTokens
             .forEach { sample in
@@ -133,6 +147,7 @@ final class TengizReportSPMTests: XCTestCase {
                 XCTAssertEqual(token, sample, "Footer tokenization error")
             }
     }
+    */
 
     func testRubliKopeikiConversion() {
         NumberSample.rubliKopeikiSamples
