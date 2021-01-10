@@ -18,7 +18,7 @@ public extension String {
     static let headerItemPattern = headerItemTitlePattern + #":[А-Яа-я ]*\d+(\.\d{3})*"#
 }
 
-extension Tokens.HeaderToken.Symbol: StringInitializable {
+extension HeaderSymbol: StringInitializable {
     public init(string: String) {
         let headerCompanyPattern = #"(?<=Название объекта:\s).*"#
         let headerMonthPattern = #"[А-Яа-я]+\d{4}"#

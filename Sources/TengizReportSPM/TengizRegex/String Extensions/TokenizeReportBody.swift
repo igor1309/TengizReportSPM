@@ -73,6 +73,12 @@ public extension String {
         return Tokens.BodyToken(source: self, symbol: .footer(title: title, value: number))
     }
 
+    // MARK: - transformLineToBodyItemNEW
+
+    func transformLineToBodyItemNEW() -> Tokens.BodyToken {
+        Tokens.BodyToken(source: self, symbol: Tokens.BodyToken.Symbol(string: self))
+    }
+
     // swiftlint:disable:next function_body_length
     func transformLineToBodyItem() -> Tokens.BodyToken {
         var title: String = ""

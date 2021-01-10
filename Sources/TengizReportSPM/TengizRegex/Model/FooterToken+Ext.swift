@@ -13,7 +13,7 @@ extension Tokens.FooterToken: StringInitializable {
     }
 }
 
-extension Tokens.FooterToken.Symbol: StringInitializable {
+extension FooterSymbol: StringInitializable {
     public init(string: String) {
         let symbol: Tokens.FooterToken.Symbol = {
 
