@@ -23,4 +23,14 @@ public extension String {
             .filter { !$0.isEmpty }
             .map(Tokens.HeaderToken.init)
     }
+
+    func tokenizeReportHeaderGENERIC() -> [Token<HeaderSymbol>] {
+        self.cleanReport()
+            .replaceMatches(for: #"\t"#, withString: String.delimiter)
+            .replaceMatches(for: #"\n"#, withString: String.delimiter)
+            .components(separatedBy: String.delimiter)
+            .filter { !$0.isEmpty }
+            .map(Token<HeaderSymbol>.init)
+    }
+
 }

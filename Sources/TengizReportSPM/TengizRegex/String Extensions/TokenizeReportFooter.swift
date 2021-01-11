@@ -19,4 +19,12 @@ public extension String {
             .map(Tokens.FooterToken.init)
     }
 
+    func tokenizeReportFooterGENERIC() -> [Token<FooterSymbol>] {
+        self
+            .cleanReport()
+            .components(separatedBy: "\n")
+            .filter { !$0.isEmpty }
+            .map(Token<FooterSymbol>.init)
+    }
+
 }
