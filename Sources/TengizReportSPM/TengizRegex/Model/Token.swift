@@ -37,8 +37,3 @@ extension Token: ExpressibleByStringLiteral {
         self.init(source: string, symbol: Symbol(stringLiteral: string))
     }
 }
-
-#warning("do you need same for others?")
-public extension Token where Symbol == BodySymbol {
-    static let empty = Token(source: "", symbol: .empty)
-}

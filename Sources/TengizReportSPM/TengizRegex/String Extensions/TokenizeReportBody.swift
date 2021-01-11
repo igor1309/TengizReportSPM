@@ -7,6 +7,11 @@
 
 import Foundation
 
+#warning("do you need same for others?")
+public extension Token where Symbol == BodySymbol {
+    static let empty = Token(source: "", symbol: .empty)
+}
+
 public extension String {
 
     // MARK: - Tokenize Report Body GENERIC
@@ -16,24 +21,17 @@ public extension String {
         // self.groupString = groupString
 
         let itemLine = String.itemFullLineWithDigitsPattern + #"|"# + String.itemCorrectionLine
-        let listWithNumbers = self.listMatches(for: itemLine)
-        let items = listWithNumbers.map(Token<BodySymbol>.init)
+        let items = self.listMatches(for: itemLine).map(Token<BodySymbol>.init)
 
         let components = self.components(separatedBy: "\n")
-        let bodyHeaderString = components.first ?? "header error"
-        let bodyFooterString = components.last ?? "footer error"
-
-        let bodyHeader = bodyHeaderString.bodyHeader()
-        let bodyFooter = bodyFooterString.bodyFooter()
+        let bodyHeader = components.first?.bodyHeader() ?? .empty
+        let bodyFooter = components.last?.bodyFooter() ?? .empty
 
         return [bodyHeader] + items + [bodyFooter]
-        //        return items
     }
 
-    func bodyHeader() -> Token<BodySymbol> {
-        guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else {
-            return Token<BodySymbol>(source: self, symbol: .empty)
-        }
+    func bodyHeader() -> Token<BodySymbol>? {
+        guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else { return nil }
 
         let symbol: BodySymbol = {
             guard let firstTail = self.replaceFirstMatch(for: String.bodyHeaderFooterTitlePattern,
@@ -44,9 +42,9 @@ public extension String {
                 return .header(title: title, value: nil, percentage: nil)
             }
 
-            let secondtail = firstTail.replaceFirstMatch(for: String.percentagePattern,
-                                                         withString: "")
-            guard let secondPercentageString = secondtail?.firstMatch(for: String.percentagePattern),
+            guard let secondtail = firstTail.replaceFirstMatch(for: String.percentagePattern,
+                                                               withString: ""),
+                  let secondPercentageString = secondtail.firstMatch(for: String.percentagePattern),
                   let secondPercentage = secondPercentageString.percentageStringToDouble()
             else {
                 return .header(title: title, value: firstPercentage, percentage: nil)
@@ -58,12 +56,10 @@ public extension String {
         return Token<BodySymbol>(source: self, symbol: symbol)
     }
 
-    func bodyFooter() -> Token<BodySymbol> {
-        let symbol: BodySymbol = {
-            guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else {
-                return .empty
-            }
+    func bodyFooter() -> Token<BodySymbol>? {
+        guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else { return nil }
 
+        let symbol: BodySymbol = {
             guard let tail = self.replaceFirstMatch(for: String.bodyHeaderFooterTitlePattern, withString: ""),
                   let number = tail.getNumberNoRemains() else {
                 return .footer(title: title, value: nil)
