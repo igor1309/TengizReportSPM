@@ -7,12 +7,6 @@
 
 import Foundation
 
-extension Tokens.FooterToken: ExpressibleByStringLiteral {
-    public init(stringLiteral string: String) {
-        self.init(source: string, symbol: Tokens.FooterToken.Symbol(stringLiteral: string))
-    }
-}
-
 extension FooterSymbol: ExpressibleByStringLiteral {
     public init(stringLiteral string: String) {
         self = string.footerSymbol()

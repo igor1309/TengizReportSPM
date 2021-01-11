@@ -11,7 +11,14 @@ protocol Printable {
     var printStr: String { get }
 }
 
-extension Tokens.HeaderToken.Symbol: Printable {
+extension ReportContent: Printable {
+    var printStr: String {
+        let all = [header] + body + [footer]
+        return all.joined(separator: "\n" + String(repeating: "#", count: 120) + "\n")
+    }
+}
+
+extension HeaderSymbol: Printable {
     public var printStr: String {
         switch self {
             case let .company(name):
@@ -29,7 +36,7 @@ extension Tokens.HeaderToken.Symbol: Printable {
     }
 }
 
-extension Tokens.BodyToken.Symbol: Printable {
+extension BodySymbol: Printable {
     public var printStr: String {
         switch self {
             case let .item(title, number, comment):
@@ -51,7 +58,7 @@ extension Tokens.BodyToken.Symbol: Printable {
     }
 }
 
-extension Tokens.FooterToken.Symbol: Printable {
+extension FooterSymbol: Printable {
     public var printStr: String {
         switch self {
             case let .total(title, number):

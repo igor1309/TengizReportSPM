@@ -7,9 +7,9 @@
 
 import Foundation
 
-public typealias HeaderSymbol = Tokens.HeaderToken.Symbol
-public typealias BodySymbol = Tokens.BodyToken.Symbol
-public typealias FooterSymbol = Tokens.FooterToken.Symbol
+public typealias HeaderSymbol = Symbols.HeaderSymbol
+public typealias BodySymbol = Symbols.BodySymbol
+public typealias FooterSymbol = Symbols.FooterSymbol
 
 // MARK: - TokenSymbol
 
@@ -38,6 +38,7 @@ extension Token: ExpressibleByStringLiteral {
     }
 }
 
+#warning("do you need same for others?")
 public extension Token where Symbol == BodySymbol {
     static let empty = Token(source: "", symbol: .empty)
 }

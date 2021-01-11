@@ -7,12 +7,6 @@
 
 import Foundation
 
-extension Tokens.HeaderToken: ExpressibleByStringLiteral {
-    public init(stringLiteral string: String) {
-        self.init(source: string, symbol: Tokens.HeaderToken.Symbol(stringLiteral: string))
-    }
-}
-
 extension HeaderSymbol: ExpressibleByStringLiteral {
     public init(stringLiteral string: String) {
         self = string.headerSymbol()

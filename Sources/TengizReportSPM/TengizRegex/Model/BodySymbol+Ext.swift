@@ -7,20 +7,14 @@
 
 import Foundation
 
-extension Tokens.BodyToken: ExpressibleByStringLiteral {
-    public init(stringLiteral string: String) {
-        self.init(source: string, symbol: Symbol(stringLiteral: string))
-    }
-}
-
 extension BodySymbol: ExpressibleByStringLiteral {
-    // swiftlint:disable:next function_body_length
     public init(stringLiteral string: String) {
         self = string.bodySymbol()
     }
 }
 
 public extension String {
+    // swiftlint:disable:next function_body_length
     func bodySymbol() -> BodySymbol {
         var title: String = ""
         var remains: String = ""

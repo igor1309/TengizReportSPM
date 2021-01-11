@@ -15,16 +15,7 @@ public extension String {
 
     // MARK: - Tokenize Report Header
 
-    func tokenizeReportHeader() -> [Tokens.HeaderToken] {
-        self.cleanReport()
-            .replaceMatches(for: #"\t"#, withString: String.delimiter)
-            .replaceMatches(for: #"\n"#, withString: String.delimiter)
-            .components(separatedBy: String.delimiter)
-            .filter { !$0.isEmpty }
-            .map(Tokens.HeaderToken.init)
-    }
-
-    func tokenizeReportHeaderGENERIC() -> [Token<HeaderSymbol>] {
+    func reportHeader() -> [Token<HeaderSymbol>] {
         self.cleanReport()
             .replaceMatches(for: #"\t"#, withString: String.delimiter)
             .replaceMatches(for: #"\n"#, withString: String.delimiter)
