@@ -7,7 +7,7 @@ func generateBodySamples() throws {
     let tokenizedBodyGroups = try filenames
         .map { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .body
@@ -51,7 +51,7 @@ func checkBodySampleSources() throws {
     let filesSources = try filenames
         .flatMap { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .body

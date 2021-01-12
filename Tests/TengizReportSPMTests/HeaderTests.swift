@@ -15,7 +15,7 @@ final class HeaderTests: XCTestCase {
         let headersInFiles = try filenames
             .flatMap { filename in
                 try filename
-                    .contentsOf()
+                    .contentsOfFile()
                     .cleanReport()
                     .reportContent()
                     .header
@@ -45,7 +45,7 @@ final class HeaderTests: XCTestCase {
         let tokens = try filenames
             .flatMap { filename in
                 try filename
-                    .contentsOf()
+                    .contentsOfFile()
                     .cleanReport()
                     .reportContent()
                     .header

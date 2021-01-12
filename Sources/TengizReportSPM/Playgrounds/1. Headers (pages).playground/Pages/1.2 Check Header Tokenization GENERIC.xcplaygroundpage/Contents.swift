@@ -28,7 +28,7 @@ func checkTokenizationOfSourceFilesWithSamples() throws {
     let tokens = try filenames
         .flatMap { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .header

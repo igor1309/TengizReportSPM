@@ -12,7 +12,7 @@ func generateFooterSamples() throws {
     let footerTokens = try filenames
         .map { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .footer
@@ -51,7 +51,7 @@ func checkFooterSampleSources() throws {
     let footersInFiles = try filenames
         .map { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .reportContent()
                 .footer
                 .cleanReport()

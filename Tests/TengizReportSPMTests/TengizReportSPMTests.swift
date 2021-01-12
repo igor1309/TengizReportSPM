@@ -12,7 +12,7 @@ final class TengizReportSPMTests: XCTestCase {
     func testTextFilesReadable() throws {
         try filenames
             .forEach {
-                XCTAssertFalse(try $0.contentsOf().isEmpty, "Can't read Report file content")
+                XCTAssertFalse(try $0.contentsOfFile().isEmpty, "Can't read Report file content")
             }
     }
 
@@ -22,7 +22,7 @@ final class TengizReportSPMTests: XCTestCase {
 
         try zip(filenames, samples)
             .forEach { filename, sample in
-                let contents = try filename.contentsOf()
+                let contents = try filename.contentsOfFile()
                 let reportContent = contents.reportContent()
 
                 XCTAssertFalse(reportContent.hasError, "Errors in splitting report content")
@@ -39,7 +39,7 @@ final class TengizReportSPMTests: XCTestCase {
 
         try zip(filenames, reversedSamples)
             .forEach { filename, sample in
-                let contents = try filename.contentsOf()
+                let contents = try filename.contentsOfFile()
                 let reportContent = contents.reportContent()
 
                 XCTAssertNotEqual(reportContent.header, sample.header, "Header split error")

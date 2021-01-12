@@ -20,7 +20,7 @@ public extension String {
         //  FIXME: FINISH THIS: how to store initial string in tokenized body?
         // self.groupString = groupString
 
-        let itemLine = String.itemFullLineWithDigitsPattern + #"|"# + String.itemCorrectionLine
+        let itemLine = Patterns.itemFullLineWithDigits + #"|"# + Patterns.itemCorrectionLine
         let items = self.listMatches(for: itemLine).map(Token<BodySymbol>.init)
 
         let components = self.components(separatedBy: "\n")
@@ -31,20 +31,20 @@ public extension String {
     }
 
     func bodyHeader() -> Token<BodySymbol>? {
-        guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else { return nil }
+        guard let title = self.firstMatch(for: Patterns.bodyHeaderFooterTitle) else { return nil }
 
         let symbol: BodySymbol = {
-            guard let firstTail = self.replaceFirstMatch(for: String.bodyHeaderFooterTitlePattern,
+            guard let firstTail = self.replaceFirstMatch(for: Patterns.bodyHeaderFooterTitle,
                                                          withString: ""),
-                  let firstPercentageString = firstTail.firstMatch(for: String.percentagePattern),
+                  let firstPercentageString = firstTail.firstMatch(for: Patterns.percentage),
                   let firstPercentage = firstPercentageString.percentageStringToDouble()
             else {
                 return .header(title: title, value: nil, percentage: nil)
             }
 
-            guard let secondtail = firstTail.replaceFirstMatch(for: String.percentagePattern,
+            guard let secondtail = firstTail.replaceFirstMatch(for: Patterns.percentage,
                                                                withString: ""),
-                  let secondPercentageString = secondtail.firstMatch(for: String.percentagePattern),
+                  let secondPercentageString = secondtail.firstMatch(for: Patterns.percentage),
                   let secondPercentage = secondPercentageString.percentageStringToDouble()
             else {
                 return .header(title: title, value: firstPercentage, percentage: nil)
@@ -57,11 +57,11 @@ public extension String {
     }
 
     func bodyFooter() -> Token<BodySymbol>? {
-        // guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else { return nil }
-        guard let title = self.firstMatch(for: #"^ИТОГ(?=:)"#) else { return nil }
+        guard let title = self.firstMatch(for: Patterns.bodyHeaderFooterTitle) else { return nil }
+        // guard let title = self.firstMatch(for: #"^ИТОГ(?=:)"#) else { return nil }
 
         let symbol: BodySymbol = {
-            guard let tail = self.replaceFirstMatch(for: String.bodyHeaderFooterTitlePattern, withString: ""),
+            guard let tail = self.replaceFirstMatch(for: Patterns.bodyHeaderFooterTitle, withString: ""),
                   let number = tail.numberWithSign() else {
                 return .footer(title: title, value: nil)
             }

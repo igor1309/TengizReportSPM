@@ -5,7 +5,7 @@ func printCleanReports() throws {
     try filenames
         .map {
             try $0
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
         }
         .forEach { print($0) }
@@ -14,7 +14,7 @@ try printCleanReports()
 
 func printReportsAsIs() throws {
     try filenames
-        .map { try $0.contentsOf() }
+        .map { try $0.contentsOfFile() }
         .forEach { print($0) }
 }
 try printReportsAsIs()

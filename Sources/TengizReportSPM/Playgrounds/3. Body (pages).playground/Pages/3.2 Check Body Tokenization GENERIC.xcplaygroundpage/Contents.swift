@@ -32,7 +32,7 @@ func checkTokenizationOfSourceFilesWithSamples() throws {
     let tokens = try filenames
         .map { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .body

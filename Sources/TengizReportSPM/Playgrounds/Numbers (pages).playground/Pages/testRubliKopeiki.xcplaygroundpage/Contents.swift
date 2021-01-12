@@ -5,9 +5,9 @@ func printAllRubliKopeikiFromReportsSorted() throws {
     try filenames
         .flatMap {
             try $0
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
-                .listMatches(for: String.rubliKopeikiPattern)
+                .listMatches(for: Patterns.rubliKopeiki)
         }
         .map {
             NumberSample(source: $0, result: $0.rubliIKopeikiToDouble())

@@ -21,18 +21,18 @@ public extension String {
         var number: Double?
 
         /// tokenize lines like `"-10.000 за перерасход питание персонала в июле"`
-        if self.firstMatch(for: String.itemCorrectionLine) != nil,
+        if self.firstMatch(for: Patterns.itemCorrectionLine) != nil,
            let number = self.numberWithSign() {
             return .item(title: "Correction", value: number, comment: self)
         }
 
         /// tokenize lines like `"12.Интернет    7.701+4.500"`
         /// or `"1. Аренда торгового помещения     200.000 (за август) +400.000 (за сентябрь)        "`
-        if self.firstMatch(for: String.itemWithPlusPattern) != nil,
-           let titleString = self.firstMatch(for: String.itemTitlePattern),
-           let remains = self.firstMatch(for: String.numbersWithPlusPattern) {
+        if self.firstMatch(for: Patterns.itemWithPlus) != nil,
+           let titleString = self.firstMatch(for: Patterns.itemTitle),
+           let remains = self.firstMatch(for: Patterns.numbersWithPlus) {
             let sum = remains
-                .listMatches(for: String.itemNumberPattern)
+                .listMatches(for: Patterns.itemNumber)
                 .compactMap { $0.numberWithSign() }
                 .reduce(0, +)
 
@@ -76,9 +76,9 @@ public extension String {
             }
         }
 
-        let itemTitlePatterns = [String.itemTitleWithPercentagePattern,
-                                 String.itemTitleWithParenthesesPattern,
-                                 String.itemTitlePattern]
+        let itemTitlePatterns = [Patterns.itemTitleWithPercentage,
+                                 Patterns.itemTitleWithParentheses,
+                                 Patterns.itemTitle]
 
         self.getFirstMatchAndRemains(patterns: itemTitlePatterns) { (match, remainsString) in
             guard let headString = match,
@@ -105,7 +105,7 @@ public extension String {
         let factPattern = #".*?фактический"#
         if let afterFact = remains.replaceFirstMatch(for: factPattern, withString: "") {
             number = afterFact.numberWithSign()
-            remains = self.replaceFirstMatch(for: String.itemTitlePattern + #""#, withString: "") ?? self
+            remains = self.replaceFirstMatch(for: Patterns.itemTitle + #""#, withString: "") ?? self
         }
 
         let dirtyComment = remains.clearWhitespacesAndNewlines()

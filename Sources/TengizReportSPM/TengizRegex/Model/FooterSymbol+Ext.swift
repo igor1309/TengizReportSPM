@@ -32,11 +32,11 @@ public extension String {
 
         if self.firstMatch(for: #"Фактический остаток:"#) != nil {
             // get percentage and remains (replace percentage with "")
-            guard let percentageString = self.firstMatch(for: String.percentagePattern),
+            guard let percentageString = self.firstMatch(for: Patterns.percentage),
                   let percentage = percentageString.percentageStringToDouble()
             else { return .error }
 
-            let remains = self.replaceMatches(for: String.percentagePattern, withString: "")
+            let remains = self.replaceMatches(for: Patterns.percentage, withString: "")
             // get number
             if let number = remains.numberWithSign() {
                 return .balance("Фактический остаток", number, percentage)

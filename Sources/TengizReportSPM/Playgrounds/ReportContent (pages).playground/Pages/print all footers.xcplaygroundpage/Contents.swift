@@ -13,7 +13,7 @@ ReportContent.sampleContents
 try filenames
     .map {
         try $0
-            .contentsOf()
+            .contentsOfFile()
             .reportContent()
             .footer
     }

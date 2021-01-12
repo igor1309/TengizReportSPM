@@ -4,7 +4,7 @@ import TengizReportSPM
 try filenames
     .map { contents in
         try contents
-            .contentsOf()
+            .contentsOfFile()
             .reportContent()
             .header
     }

@@ -6,12 +6,12 @@ import TengizReportSPM
 let haveNoDigits = try filenames
     .flatMap {
         try $0
-            .contentsOf()
+            .contentsOfFile()
             .cleanReport()
             .split(separator: "\n")
             .map { String($0) }
             .filter {
-                $0.firstMatch(for: String.itemFullLineWithoutDigitsPattern) != nil
+                $0.firstMatch(for: Patterns.itemFullLineWithoutDigits) != nil
             }
     }
 

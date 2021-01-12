@@ -13,7 +13,7 @@ final class BodyTests: XCTestCase {
         let filesSources = try filenames
             .flatMap { filename in
                 try filename
-                    .contentsOf()
+                    .contentsOfFile()
                     .cleanReport()
                     .reportContent()
                     .body
@@ -60,7 +60,7 @@ final class BodyTests: XCTestCase {
         let tokens = try filenames
             .map { filename in
                 try filename
-                    .contentsOf()
+                    .contentsOfFile()
                     .cleanReport()
                     .reportContent()
                     .body

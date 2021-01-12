@@ -9,30 +9,24 @@ import Foundation
 
 public extension String {
 
-    // pattern to match numbers without rubliKopeiki
-    static let itemNumberPattern =   #"\d{1,3}(?:\.\d{3})*"#
-    static let rubliKopeikiPattern = #"\d{1,3}(\.\d{3})*р( \d\d?к)?"#
-    static let kopeikiPatterm = #"((?<=р )\d\d?(?=к))"#
-    static let minusPattern = #"(?:[М|м]инус\D*)|-(?=\d)"#
-
     // MARK: - helpers
 
     func numberAndRemains() -> (Double?, String) {
         var sign: Double = 1
-        if self.firstMatch(for: String.minusPattern) != nil {
+        if self.firstMatch(for: Patterns.minus) != nil {
             sign = -1
         }
 
-        if let numberString = self.firstMatch(for: String.rubliKopeikiPattern) {
+        if let numberString = self.firstMatch(for: Patterns.rubliKopeiki) {
             let rubliIKopeiki = numberString.rubliIKopeikiToDouble()
-            if let remains = self.replaceFirstMatch(for: String.rubliKopeikiPattern, withString: "") {
+            if let remains = self.replaceFirstMatch(for: Patterns.rubliKopeiki, withString: "") {
                 return (sign * rubliIKopeiki, remains)
             }
         }
 
-        if let numberString = self.firstMatch(for: String.itemNumberPattern),
+        if let numberString = self.firstMatch(for: Patterns.itemNumber),
            let double = Double(numberString.replacingOccurrences(of: ".", with: "")),
-           let remains = self.replaceFirstMatch(for: String.itemNumberPattern, withString: "") {
+           let remains = self.replaceFirstMatch(for: Patterns.itemNumber, withString: "") {
             return (sign * double, remains)
         }
 
@@ -41,16 +35,16 @@ public extension String {
 
     func numberWithSign() -> Double? {
         var sign: Double = 1
-        if self.firstMatch(for: String.minusPattern) != nil {
+        if self.firstMatch(for: Patterns.minus) != nil {
             sign = -1
         }
 
-        if let rubliIKopeikiString = self.firstMatch(for: String.rubliKopeikiPattern) {
+        if let rubliIKopeikiString = self.firstMatch(for: Patterns.rubliKopeiki) {
             let rubliIKopeiki = rubliIKopeikiString.rubliIKopeikiToDouble()
             return sign * rubliIKopeiki
         }
 
-        if let doubleString = self.firstMatch(for: String.itemNumberPattern),
+        if let doubleString = self.firstMatch(for: Patterns.itemNumber),
            let double = Double(doubleString.replacingOccurrences(of: ".", with: "")) {
             return sign * double
         }
@@ -61,11 +55,11 @@ public extension String {
     // MARK: - Conversion
 
     func rubliIKopeikiToDouble() -> Double {
-        guard let integerString = self.firstMatch(for: String.itemNumberPattern),
+        guard let integerString = self.firstMatch(for: Patterns.itemNumber),
               let integer = Double(integerString.replaceMatches(for: #"\."#, withString: ""))
         else { return 0 }
 
-        guard let decimalString = self.firstMatch(for: String.kopeikiPatterm),
+        guard let decimalString = self.firstMatch(for: Patterns.kopeiki),
               let decimal = Double(decimalString)
         else { return integer }
 
@@ -79,7 +73,7 @@ public extension String {
     }
 
     func numberWithoutSign() -> Double? {
-        if let numberString = self.firstMatch(for: String.itemNumberPattern),
+        if let numberString = self.firstMatch(for: Patterns.itemNumber),
            let double = Double(numberString.replacingOccurrences(of: ".", with: "")) {
             return double
         }

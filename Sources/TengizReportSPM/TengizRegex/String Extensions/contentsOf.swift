@@ -12,7 +12,7 @@ public enum TestErrors: Error {
 }
 
 public extension String {
-    func contentsOf() throws -> String {
+    func contentsOfFile() throws -> String {
         guard let filepath = Bundle.module.path(forResource: self, ofType: "txt") else { throw TestErrors.noFile(self) }
         return try String(contentsOfFile: filepath)
     }

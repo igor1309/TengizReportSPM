@@ -7,7 +7,7 @@ func generateHeaderSamplesGENERIC() throws {
     let headerTokens = try filenames
         .map { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .header
@@ -36,7 +36,7 @@ func checkHeaderSampleSources() throws {
     let headersInFiles = try filenames
         .flatMap { filename in
             try filename
-                .contentsOf()
+                .contentsOfFile()
                 .cleanReport()
                 .reportContent()
                 .header

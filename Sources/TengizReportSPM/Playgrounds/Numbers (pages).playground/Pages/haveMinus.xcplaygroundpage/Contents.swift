@@ -10,12 +10,12 @@ import TengizReportSPM
 let cleanRows = try filenames
     .flatMap {
         try $0
-            .contentsOf()
+            .contentsOfFile()
             .cleanReport()
             .split(separator: "\n")
             .map { String($0) }
             .filter {
-                $0.firstMatch(for: String.itemFullLineWithoutDigitsPattern) == nil
+                $0.firstMatch(for: Patterns.itemFullLineWithoutDigits) == nil
             }
     }
 
@@ -23,14 +23,14 @@ print(String(repeating: "-", count: 40) + " all rows from all reports, that are 
 cleanRows.forEach { print($0) }
 
 var haveMinus = cleanRows.filter {
-    $0.firstMatch(for: String.minusPattern) != nil
+    $0.firstMatch(for: Patterns.minus) != nil
 }
 print(String(repeating: "-", count: 40) + " Rows from all reports with minus:")
 haveMinus.forEach { print($0) }
 print(String(repeating: "#", count: 120))
 
 var notHaveMinus = cleanRows.filter {
-    $0.firstMatch(for: String.minusPattern) == nil
+    $0.firstMatch(for: Patterns.minus) == nil
 }
 print(String(repeating: "-", count: 40) + " Rows from all reports without minus:")
 notHaveMinus.forEach { print($0) }

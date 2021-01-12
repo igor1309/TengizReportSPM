@@ -7,31 +7,45 @@
 
 import Foundation
 
-public extension String {
+public enum Patterns {
 
     // MARK: - Regular Expression Patterns
 
     ///  (?m) - MULTILINE mode on
-    private static let bodyHeaderPattern = #"^[А-Яа-я][^\n]*\n"#
+    // public static let body = #"(?m)^[А-Яа-я][^\n]*\n(^\d\d?\..*\n+)+ИТОГ:.*"#
+    public static let body = #"(?m)"# + bodyHeader + #"("# + itemLine + #"|("# + itemCorrectionLine + #"\n))+ИТОГ:.*"#
+    /// matching lines starting like "3. Электричество" or "12.Интернет"
+
+    private static let bodyHeader = #"^[А-Яа-я][^\n]*\n"#
+    public static let bodyHeaderFooterTitle = #"^[А-Яа-я][А-Яа-я ]+(?=:)"#
+
     private static let itemLine = #"(^\d\d?\..*\n+)"#
     /// matching lines like `"-10.000 за перерасход питание персонала в июле"`
-    static let itemCorrectionLine = #"^-\d{1,3}(?:\.\d{3})*.*"#
-    // static let bodyPattern = #"(?m)^[А-Яа-я][^\n]*\n(^\d\d?\..*\n+)+ИТОГ:.*"#
-    static let bodyPattern = #"(?m)"# + bodyHeaderPattern + #"("# + itemLine + #"|("# + itemCorrectionLine + #"\n))+ИТОГ:.*"#
-    /// matching lines starting like "3. Электричество" or "12.Интернет"
-    static let itemTitlePattern = #"^[1-9]\d?\.[^\d\n]+"#
-    static let itemFullLineWithDigitsPattern = #"(?m)"# + itemTitlePattern + #"\d+.*"#
+    public static let itemCorrectionLine = #"^-\d{1,3}(?:\.\d{3})*.*"#
+
+    public static let itemTitle = #"^[1-9]\d?\.[^\d\n]+"#
+    public static let itemFullLineWithDigits = #"(?m)"# + itemTitle + #"\d+.*"#
     /// rows without digits except for line number
-    static let itemFullLineWithoutDigitsPattern = #"(?m)^[1-9]\d?\.\D*$"#
+    public static let itemFullLineWithoutDigits = #"(?m)^[1-9]\d?\.\D*$"#
     /// matching lines like `"4.Банковская комиссия 1.6% за эквайринг    "` (mind whitespace)
-    static let itemTitleWithPercentagePattern =  itemTitlePattern + percentagePattern + #"[\D]*"#
-    // static let itemTitleWithPercentagePattern =  #"^[1-9]\d?\.[\D]*\d+(\.\d+)?%[\D]*"#
+
+    public static let itemTitleWithPercentage =  itemTitle + percentage + #"[\D]*"#
+    // public static let itemTitleWithPercentagePattern =  #"^[1-9]\d?\.[\D]*\d+(\.\d+)?%[\D]*"#
     /// matching lines like `"22. Хэдхантер (подбор пероснала)    "` (mind whitespace)
-    static let itemTitleWithParenthesesPattern = itemTitlePattern + #"\([^(]*\)[^\d\n]*"#
-    static let itemWithPlusPattern = itemTitlePattern + numbersWithPlusPattern
+    public static let itemTitleWithParentheses = itemTitle + #"\([^(]*\)[^\d\n]*"#
+
+    public static let itemWithPlus = itemTitle + numbersWithPlus
     /// pattern to match `"200.000 (за август) +400.000 (за сентябрь)"` or `"7.701+4.500"`
-    static let numbersWithPlusPattern = itemNumberPattern + #"(?:\s*\([^\)]+\)\s*)?\+"# + itemNumberPattern + #"(?:\s*\([^\)]+\)\s*)?"#
-    static let bodyHeaderFooterTitlePattern = #"^[А-Яа-я][А-Яа-я ]+(?=:)"#
-    static let percentagePattern = #"\d+(\.\d+)?%"#
+
+    public static let numbersWithPlus = itemNumber + #"(?:\s*\([^\)]+\)\s*)?\+"# + itemNumber + #"(?:\s*\([^\)]+\)\s*)?"#
+
+    public static let percentage = #"\d+(\.\d+)?%"#
+
+    // pattern to match numbers without rubliKopeiki
+    public static let itemNumber =   #"\d{1,3}(?:\.\d{3})*"#
+    public static let rubliKopeiki = #"\d{1,3}(\.\d{3})*р( \d\d?к)?"#
+    public static let kopeiki = #"((?<=р )\d\d?(?=к))"#
+
+    public static let minus = #"(?:[М|м]инус\D*)|-(?=\d)"#
 
 }

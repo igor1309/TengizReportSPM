@@ -9,6 +9,14 @@ import XCTest
 import TengizReportSPM
 
 final class NumbersTest: XCTestCase {
+    func testNumberConversion() {
+        NumberSample.numbersWithSignSamples
+            .forEach {
+                XCTAssertEqual($0.result, $0.source.numberWithSign(),
+                               "rubliIKopeikiToDouble conversion error")
+            }
+    }
+
     func testRubliKopeikiConversion() {
         NumberSample.rubliKopeikiSamples
             .forEach {

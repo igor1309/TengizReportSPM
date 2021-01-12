@@ -21,7 +21,7 @@ final class FooterTests: XCTestCase {
         let footersInFiles = try filenames
             .map { filename in
                 try filename
-                    .contentsOf()
+                    .contentsOfFile()
                     .reportContent()
                     .footer
                     .cleanReport()
@@ -54,7 +54,7 @@ final class FooterTests: XCTestCase {
         let tokens = try filenames
             .flatMap { filename in
                 try filename
-                    .contentsOf()
+                    .contentsOfFile()
                     .reportContent()
                     .footer
                     .cleanReport()

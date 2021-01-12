@@ -7,7 +7,7 @@ import TengizReportSPM
 // working with raw text as is - no text tweaks
 func testSplitReportContent() {
     for (filename, reportContent) in zip(filenames, ReportContent.sampleContents) {
-        guard let contents = try? filename.contentsOf() else {
+        guard let contents = try? filename.contentsOfFile() else {
             print("ERROR reading report file in bundle")
             return
         }

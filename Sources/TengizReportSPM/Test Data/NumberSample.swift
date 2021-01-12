@@ -18,6 +18,31 @@ public struct NumberSample {
 }
 
 public extension NumberSample {
+    static var numbersWithSignSamples: [NumberSample] {
+        [
+            NumberSample(source: "минус 123", result: -123),
+            NumberSample(source: "Минус 123", result: -123),
+            /// MARK: mind  whitespace after sign
+            NumberSample(source: "- 123", result: 123),
+            NumberSample(source: "-123", result: -123),
+            NumberSample(source: "минус 1.001", result: -1_001),
+            NumberSample(source: "Минус 1.002", result: -1_002),
+            /// MARK: mind  whitespace after sign
+            NumberSample(source: "- 1.003", result: 1_003),
+            NumberSample(source: "-1.004", result: -1_004),
+            NumberSample(source: "минус 123.456", result: -123_456),
+            NumberSample(source: "Минус 123.456", result: -123_456),
+            /// MARK: mind  whitespace after sign
+            NumberSample(source: "- 123.456", result: 123_456),
+            NumberSample(source: "-123.456", result: -123_456),
+            NumberSample(source: "минус 123.456р 78к", result: -123_456.78),
+            NumberSample(source: "Минус 123.456р 78к", result: -123_456.78),
+            /// MARK: mind  whitespace after sign
+            NumberSample(source: "- 123.456р 78к", result: 123_456.78),
+            NumberSample(source: "-123.456р 78к", result: -123_456.78),
+        ]
+    }
+
     static var rubliKopeikiSamples: [NumberSample] {
         [
             NumberSample(source: "5.863р 74к",     result: 5863.74),
