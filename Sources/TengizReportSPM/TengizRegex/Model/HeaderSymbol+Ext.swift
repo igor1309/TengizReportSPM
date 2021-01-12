@@ -27,7 +27,7 @@ public extension String {
         }
 
         if let title = self.firstMatch(for: String.headerItemTitlePattern),
-           let number = self.extractNumber() {
+           let number = self.numberWithoutSign() {
             return .item(title: title, value: number)
         }
 

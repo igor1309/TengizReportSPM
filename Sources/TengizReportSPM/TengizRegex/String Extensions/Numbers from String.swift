@@ -17,7 +17,7 @@ public extension String {
 
     // MARK: - helpers
 
-    func getNumberAndRemains() -> (Double?, String) {
+    func numberAndRemains() -> (Double?, String) {
         var sign: Double = 1
         if self.firstMatch(for: String.minusPattern) != nil {
             sign = -1
@@ -28,26 +28,30 @@ public extension String {
             if let remains = self.replaceFirstMatch(for: String.rubliKopeikiPattern, withString: "") {
                 return (sign * rubliIKopeiki, remains)
             }
-        } else if let numberString = self.firstMatch(for: String.itemNumberPattern),
-                  let double = Double(numberString.replacingOccurrences(of: ".", with: "")),
-                  let remains = self.replaceFirstMatch(for: String.itemNumberPattern, withString: "") {
+        }
+
+        if let numberString = self.firstMatch(for: String.itemNumberPattern),
+           let double = Double(numberString.replacingOccurrences(of: ".", with: "")),
+           let remains = self.replaceFirstMatch(for: String.itemNumberPattern, withString: "") {
             return (sign * double, remains)
         }
 
         return (nil, self)
     }
 
-    func getNumberNoRemains() -> Double? {
+    func numberWithSign() -> Double? {
         var sign: Double = 1
         if self.firstMatch(for: String.minusPattern) != nil {
             sign = -1
         }
 
-        if let numberString = self.firstMatch(for: String.rubliKopeikiPattern) {
-            let rubliIKopeiki = numberString.rubliIKopeikiToDouble()
+        if let rubliIKopeikiString = self.firstMatch(for: String.rubliKopeikiPattern) {
+            let rubliIKopeiki = rubliIKopeikiString.rubliIKopeikiToDouble()
             return sign * rubliIKopeiki
-        } else if let numberString = self.firstMatch(for: String.itemNumberPattern),
-                  let double = Double(numberString.replacingOccurrences(of: ".", with: "")) {
+        }
+
+        if let doubleString = self.firstMatch(for: String.itemNumberPattern),
+           let double = Double(doubleString.replacingOccurrences(of: ".", with: "")) {
             return sign * double
         }
 
@@ -74,7 +78,7 @@ public extension String {
         return percentage / 100
     }
 
-    func extractNumber() -> Double? {
+    func numberWithoutSign() -> Double? {
         if let numberString = self.firstMatch(for: String.itemNumberPattern),
            let double = Double(numberString.replacingOccurrences(of: ".", with: "")) {
             return double

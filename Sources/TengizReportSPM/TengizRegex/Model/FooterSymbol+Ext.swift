@@ -16,17 +16,17 @@ extension FooterSymbol: ExpressibleByStringLiteral {
 public extension String {
     func footerSymbol() -> FooterSymbol {
         if self.firstMatch(for: #"ИТОГ:"#) != nil,
-           let number = self.getNumberNoRemains() {
+           let number = self.numberWithSign() {
             return .total("ИТОГ", number)
         }
 
         if self.firstMatch(for: #"ИТОГ всех расходов за месяц"#) != nil,
-           let number = self.getNumberNoRemains() {
+           let number = self.numberWithSign() {
             return .expensesTotal("ИТОГ всех расходов за месяц", number)
         }
 
         if self.firstMatch(for: #"[П\п]ереход"#) != nil,
-           let number = self.getNumberNoRemains() {
+           let number = self.numberWithSign() {
             return .openingBalance(self.trimmingCharacters(in: .whitespaces), number)
         }
 
@@ -38,7 +38,7 @@ public extension String {
 
             let remains = self.replaceMatches(for: String.percentagePattern, withString: "")
             // get number
-            if let number = remains.getNumberNoRemains() {
+            if let number = remains.numberWithSign() {
                 return .balance("Фактический остаток", number, percentage)
             }
         }

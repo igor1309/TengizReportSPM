@@ -62,7 +62,7 @@ public extension String {
 
         let symbol: BodySymbol = {
             guard let tail = self.replaceFirstMatch(for: String.bodyHeaderFooterTitlePattern, withString: ""),
-                  let number = tail.getNumberNoRemains() else {
+                  let number = tail.numberWithSign() else {
                 return .footer(title: title, value: nil)
             }
 

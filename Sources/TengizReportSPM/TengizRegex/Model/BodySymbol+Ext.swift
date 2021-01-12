@@ -22,7 +22,7 @@ public extension String {
 
         /// tokenize lines like `"-10.000 за перерасход питание персонала в июле"`
         if self.firstMatch(for: String.itemCorrectionLine) != nil,
-           let number = self.getNumberNoRemains() {
+           let number = self.numberWithSign() {
             return .item(title: "Correction", value: number, comment: self)
         }
 
@@ -33,7 +33,7 @@ public extension String {
            let remains = self.firstMatch(for: String.numbersWithPlusPattern) {
             let sum = remains
                 .listMatches(for: String.itemNumberPattern)
-                .compactMap { $0.getNumberNoRemains() }
+                .compactMap { $0.numberWithSign() }
                 .reduce(0, +)
 
             return .item(title: titleString.clearWhitespacesAndNewlines(),
@@ -47,7 +47,7 @@ public extension String {
             let prihodPattern = #"1. Приход товара по накладным"#
             if let titleString = self.firstMatch(for: prihodPattern),
                let afterItogo = self.replaceFirstMatch(for: itemWithItogoPattern, withString: ""),
-               let number = afterItogo.getNumberNoRemains(),
+               let number = afterItogo.numberWithSign(),
                let comment = self.replaceFirstMatch(for: prihodPattern, withString: "") {
                 return .item(title: titleString,
                                   value: number,
@@ -57,7 +57,7 @@ public extension String {
             let prepayPattern = #"2. Предоплаченный товар, но не отраженный в приходе"#
             if let titleString = self.firstMatch(for: prepayPattern),
                let afterItogo = self.replaceFirstMatch(for: itemWithItogoPattern, withString: ""),
-               let number = afterItogo.getNumberNoRemains(),
+               let number = afterItogo.numberWithSign(),
                let comment = self.replaceFirstMatch(for: prepayPattern, withString: "") {
                 return .item(title: titleString,
                                   value: number,
@@ -69,7 +69,7 @@ public extension String {
         let anotherPrepayPattern = #"2. Предоплаченный товар, но не отраженный в приходе(?=\s+[А-Яа-я])"#
         if let titleString = self.firstMatch(for: anotherPrepayPattern) {
             let comment = self.replaceMatches(for: anotherPrepayPattern, withString: "")
-            if let number = comment.extractNumber() {
+            if let number = comment.numberWithoutSign() {
                 return .item(title: titleString,
                                   value: number,
                                   comment: comment.clearWhitespacesAndNewlines())
@@ -92,19 +92,19 @@ public extension String {
             return .empty
         }
 
-        (number, remains) = remains.getNumberAndRemains()
+        (number, remains) = remains.numberAndRemains()
 
         /// special case when number after item title is not a number for item
         /// for example in `"1. Приход товара по накладным     946.056р (оплаты фактические: 475.228р 52к -переводы; 157.455р 85к-корпоративная карта; 0-наличные из кассы; Итого-632.684р 37к)"`
         if let afterItogo = remains.replaceFirstMatch(for: itemWithItogoPattern, withString: "") {
-            number = afterItogo.getNumberNoRemains()
+            number = afterItogo.numberWithSign()
         }
 
         /// another special case when number after item title is not a number for item
         /// for example in `"1. Приход товара по накладным    451.198р41к (из них у нас оплачено фактический 21.346р15к)"`
         let factPattern = #".*?фактический"#
         if let afterFact = remains.replaceFirstMatch(for: factPattern, withString: "") {
-            number = afterFact.getNumberNoRemains()
+            number = afterFact.numberWithSign()
             remains = self.replaceFirstMatch(for: String.itemTitlePattern + #""#, withString: "") ?? self
         }
 
