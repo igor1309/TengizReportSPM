@@ -26,7 +26,9 @@ final class BodyTests: XCTestCase {
 
         let sampleSources = Token<BodySymbol>.allBodyTokens
             .flatMap {
-                $0.map(\.source)
+                $0.flatMap{
+                    $0.map(\.source)
+                }
             }
 
         XCTAssertEqual(filesSources, sampleSources, "ERROR: body groups in samples and files are different")
@@ -34,6 +36,23 @@ final class BodyTests: XCTestCase {
         zip(filesSources, sampleSources)
             .forEach { body, sample in
                 XCTAssertEqual(body, sample, "ERROR: body groups in samples and files are different")
+            }
+    }
+
+    func testTokenizationOfSamples() {
+        Token<BodySymbol>.allBodyTokens
+            .forEach { month in
+                month.forEach { samples in
+                    let bodyGroup = samples.map(\.source).joined(separator: "\n")
+                    let tokens: [Token<BodySymbol>] = bodyGroup.reportBodyGroup()
+
+                    XCTAssertEqual(tokens, samples, "OK: tokenizing sample source do not match sample tokens")
+
+                    zip(tokens, samples)
+                        .forEach { token, sample in
+                            XCTAssertEqual(token.symbol, sample.symbol, "ERROR in tokenization")
+                        }
+                }
             }
     }
 
@@ -45,7 +64,7 @@ final class BodyTests: XCTestCase {
                     .cleanReport()
                     .reportContent()
                     .body
-                    .flatMap { group in
+                    .map { group in
                         group.reportBodyGroup()
                     }
             }

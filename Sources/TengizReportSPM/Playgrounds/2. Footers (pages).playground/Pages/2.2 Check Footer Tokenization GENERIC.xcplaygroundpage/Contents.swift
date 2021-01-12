@@ -67,4 +67,4 @@ func checkTokenizationOfSourceFilesWithSamples() throws {
             }
         }
 }
-try compareTokenizationOfSourceFilesWithSamples()
+try checkTokenizationOfSourceFilesWithSamples()

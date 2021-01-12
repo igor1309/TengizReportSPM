@@ -57,7 +57,8 @@ public extension String {
     }
 
     func bodyFooter() -> Token<BodySymbol>? {
-        guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else { return nil }
+        // guard let title = self.firstMatch(for: String.bodyHeaderFooterTitlePattern) else { return nil }
+        guard let title = self.firstMatch(for: #"^ИТОГ(?=:)"#) else { return nil }
 
         let symbol: BodySymbol = {
             guard let tail = self.replaceFirstMatch(for: String.bodyHeaderFooterTitlePattern, withString: ""),

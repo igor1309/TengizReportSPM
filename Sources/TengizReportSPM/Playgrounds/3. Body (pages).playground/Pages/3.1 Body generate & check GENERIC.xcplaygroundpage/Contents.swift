@@ -28,8 +28,9 @@ func generateBodySamples() throws {
     tokenizedBodyGroups.enumerated()
         .forEach {
             let offset = String(format: "%02d", $0.offset + 6)
-            print("\nstatic var bodyTokens2020\(offset): [Token<BodySymbol>] {\n[", terminator: "")
+            print("\nstatic var bodyTokens2020\(offset): [[Token<BodySymbol>]] {\n[", terminator: "")
             $0.element.forEach {
+                print("[", terminator: "")
                 $0.forEach {
                     // print("Tokens.\($0),")
                     //print("Token<BodySymbol>(source: \"\($0.source)\", symbol: .\($0.symbol)),")
@@ -37,6 +38,7 @@ func generateBodySamples() throws {
                     debugPrint("\($0.source)", terminator: "")
                     print(", symbol: .\($0.symbol)),")
                 }
+                print("],")
             }
             print("]\n}")
         }
@@ -63,7 +65,9 @@ func checkBodySampleSources() throws {
 
     let sampleSources = Token<BodySymbol>.allBodyTokens
         .flatMap {
-            $0.map(\.source)
+            $0.flatMap{
+                $0.map(\.source)
+            }
         }
     // sampleSources.forEach { print($0) }
 

@@ -2,11 +2,30 @@ import Foundation
 import TengizReportSPM
 
 // 1. check tokenization using just samples
-// non-linear structure of Report Body (header, groups, footer)
-// prevents from using the same checking technique as in Header/Footer
-// for now use #2
-func checkTokenizationOfSamples() {}
-// checkTokenizationOfSamples()
+func checkTokenizationOfSamples() {
+    Token<BodySymbol>.allBodyTokens
+        .forEach { month in
+            month.forEach { samples in
+                let bodyGroup = samples.map(\.source).joined(separator: "\n")
+                let tokens: [Token<BodySymbol>] = bodyGroup.reportBodyGroup()
+
+                guard tokens != samples else {
+                    //print("OK: tokenizing sample source match sample tokens")
+                    return
+                }
+
+                zip(tokens, samples)
+                    .forEach { token, sample in
+                        if token.symbol != sample.symbol {
+                            print("\(String(repeating: "-", count: 60)) ERROR in tokenization")
+                            print("WANT: \(sample.symbol.printStr)")
+                            print("HAVE: \(token.symbol.printStr)")
+                        }
+                    }
+            }
+        }
+}
+checkTokenizationOfSamples()
 
 // 2. compare tokenization of source files with samples
 func checkTokenizationOfSourceFilesWithSamples() throws {
@@ -17,7 +36,7 @@ func checkTokenizationOfSourceFilesWithSamples() throws {
                 .cleanReport()
                 .reportContent()
                 .body
-                .flatMap { group in
+                .map { group in
                     group.reportBodyGroup()
                 }
         }
@@ -43,7 +62,7 @@ func checkTokenizationOfSourceFilesWithSamples() throws {
         print("ERROR: count: tokens \(tokens.count) != samples \(samples.count)")
     }
 
-    zip(tokens, samples)//.dropFirst(30).prefix(7)
+    zip(tokens.flatMap { $0 }, samples.flatMap { $0 })//.dropFirst(30).prefix(7)
         .forEach { tokensGroup, samplesGroup in
             zip(tokensGroup, samplesGroup)
                 .forEach { token, sample in
