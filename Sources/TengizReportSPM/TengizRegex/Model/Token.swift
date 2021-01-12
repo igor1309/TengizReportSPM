@@ -14,6 +14,7 @@ public typealias FooterSymbol = Symbols.FooterSymbol
 // MARK: - TokenSymbol
 
 public protocol TokenSymbol: Equatable,
+                             Hashable,
                              ExpressibleByStringLiteral where StringLiteralType == String {}
 
 extension HeaderSymbol: TokenSymbol {}
