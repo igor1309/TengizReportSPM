@@ -15,21 +15,13 @@ extension FooterSymbol: ExpressibleByStringLiteral {
 
 public extension String {
     func footerSymbol() -> FooterSymbol {
-        if self.firstMatch(for: #"ИТОГ:"#) != nil,
-           let number = self.numberWithSign() {
-            return .total("ИТОГ", number)
-        }
-
+        // expensesTotal
         if self.firstMatch(for: #"ИТОГ всех расходов за месяц"#) != nil,
            let number = self.numberWithSign() {
             return .expensesTotal("ИТОГ всех расходов за месяц", number)
         }
 
-        if self.firstMatch(for: #"[П\п]ереход"#) != nil,
-           let number = self.numberWithSign() {
-            return .openingBalance(self.trimmingCharacters(in: .whitespaces), number)
-        }
-
+        // total
         if self.firstMatch(for: #"Фактический остаток:"#) != nil {
             // get percentage and remains (replace percentage with "")
             guard let percentageString = self.firstMatch(for: Patterns.percentage),
@@ -39,11 +31,32 @@ public extension String {
             let remains = self.replaceMatches(for: Patterns.percentage, withString: "")
             // get number
             if let number = remains.numberWithSign() {
-                return .balance("Фактический остаток", number, percentage)
+                return .total(title: "Фактический остаток", value: number, percentage: percentage)
             }
         }
 
-        #warning("TBD or ERROR???")
-        return .tbd
+        // openingBalance
+        if self.firstMatch(for: #"[П\п]ереход"#) != nil,
+           let number = self.numberWithSign() {
+            return .openingBalance(title: self.trimmingCharacters(in: .whitespaces), value: number)
+        }
+
+        // extraIncomeExpenses
+        if self.firstMatch(for: Patterns.numberWithSignAtStart) != nil,
+           let number = self.numberWithSign() {
+            return .extraIncomeExpenses(title: self, value: number)
+        }
+
+        // balance
+        if self.firstMatch(for: #"ИТОГ:"#) != nil,
+           let number = self.numberWithSign() {
+            return .balance(title: "ИТОГ", value: number)
+        }
+
+        return .error
     }
+}
+
+extension Patterns {
+    public static let numberWithSignAtStart = #"^\s*(-|\+)\d{1,3}"#
 }

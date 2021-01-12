@@ -61,7 +61,7 @@ extension BodySymbol: Printable {
 extension FooterSymbol: Printable {
     public var printStr: String {
         switch self {
-            case let .total(title, number):
+            case let .balance(title, number):
                 return "total: title: \"\(title)\" number: \(number)"
 
             case let .expensesTotal(title, number):
@@ -70,11 +70,11 @@ extension FooterSymbol: Printable {
             case let .openingBalance(title, number):
                 return "openingBalance: title: \"\(title)\" number: \(number)"
 
-            case let .balance(title, number1, number2):
+            case let .total(title, number1, number2):
                 return "balance: title: \"\(title)\" number1: \(number1) number2: \(number2)"
 
-            case .tbd:
-                return "TBD"
+            case let .extraIncomeExpenses(title, number):
+                return "extraIncomeExpenses: title: \"\(title)\" number: \(number)"
 
             case .error:
                 return "ERROR"

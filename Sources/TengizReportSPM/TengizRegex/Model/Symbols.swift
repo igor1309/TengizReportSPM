@@ -24,11 +24,12 @@ public enum Symbols {
     }
 
     public enum FooterSymbol: Hashable, Equatable {
-        case total(String, Double)
         case expensesTotal(String, Double)
-        case openingBalance(String, Double)
-        case balance(String, Double, Double)
-        case tbd
+        /// сальдо доходов-расходов
+        case total(title: String, value: Double, percentage: Double)
+        case openingBalance(title: String, value: Double)
+        case extraIncomeExpenses(title: String, value: Double)
+        case balance(title: String, value: Double)
         case error
     }
 }

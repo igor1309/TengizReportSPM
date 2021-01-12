@@ -42,9 +42,10 @@ final class FooterTests: XCTestCase {
             .forEach { sample in
                 // tokenizeReportFooter() returns array
                 // but here sample.source contains just one token
-                let token = sample.source.reportFooter().first ?? Token<FooterSymbol>(source: sample.source, symbol: .error)
+                let token = Token<FooterSymbol>(stringLiteral: sample.source)
 
-                XCTAssertEqual(token, sample, "ERROR in tokenization of samples")
+                XCTAssertEqual(token.source, sample.source, "ERROR in tokenization of samples")
+                XCTAssertEqual(token.symbol, sample.symbol, "ERROR in tokenization of samples")
             }
     }
 
@@ -65,7 +66,8 @@ final class FooterTests: XCTestCase {
 
         zip(samples, tokens)
             .forEach { sample, token in
-                XCTAssertEqual(token, sample, "ERROR in tokenization (files)")
+                XCTAssertEqual(token.source, sample.source, "ERROR in tokenization (files)")
+                XCTAssertEqual(token.symbol, sample.symbol, "ERROR in tokenization (files)")
             }
     }
 

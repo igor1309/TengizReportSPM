@@ -1,5 +1,5 @@
 //
-//  contentsOf.swift
+//  contentsOfFile.swift
 //  
 //
 //  Created by Igor Malyarov on 08.01.2021.
