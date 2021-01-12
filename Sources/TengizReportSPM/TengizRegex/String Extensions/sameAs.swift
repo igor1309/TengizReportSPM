@@ -29,7 +29,7 @@ public extension ReportContent {
     /// Compares two ReportContents
     /// - Parameter other: ReportContent
     /// - Returns: true if all components (properties) of ReportContents are "the same" (using sameAs(:) func)
-    public func sameAs(_ other: ReportContent) -> Bool {
+    func sameAs(_ other: ReportContent) -> Bool {
         return header.sameAs(other.header)
             && body.sameAs(other.body)
             && footer.sameAs(other.footer)

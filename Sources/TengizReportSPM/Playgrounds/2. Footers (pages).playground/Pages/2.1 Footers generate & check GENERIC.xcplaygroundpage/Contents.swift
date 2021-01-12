@@ -3,11 +3,6 @@ import TengizReportSPM
 
 // MARK: - Generate Footer Samples
 // run generateFooterSamples(), use console output to set vars in public extension Tokens.FooterToken
-// MARK: ##########################################################################
-// MARK: - THIS DOES NOT WORK YET - tokenizeReportFooter() DOES NOT COVER ALL CASES
-// MARK:   NEED TO CREATE SAMPLES MANUALLY
-// MARK: ##########################################################################
-#warning("finish with tokenizeReportFooter()")
 func generateFooterSamples() throws {
     let footerTokens = try filenames
         .map { filename in
