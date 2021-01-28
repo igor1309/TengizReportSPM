@@ -13,8 +13,7 @@ public typealias FooterSymbol = Symbols.FooterSymbol
 
 // MARK: - TokenSymbol
 
-public protocol TokenSymbol: Equatable,
-                             Hashable,
+public protocol TokenSymbol: Hashable,
                              ExpressibleByStringLiteral where StringLiteralType == String {}
 
 extension HeaderSymbol: TokenSymbol {}
@@ -23,7 +22,7 @@ extension FooterSymbol: TokenSymbol {}
 
 // MARK: - Token
 
-public struct Token<Symbol: TokenSymbol>: Equatable {
+public struct Token<Symbol: TokenSymbol>: Equatable, Hashable {
     public let source: String
     public let symbol: Symbol
 

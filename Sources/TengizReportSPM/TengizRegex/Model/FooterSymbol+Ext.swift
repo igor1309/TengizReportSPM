@@ -18,7 +18,7 @@ public extension String {
         // expensesTotal
         if self.firstMatch(for: #"ИТОГ всех расходов за месяц"#) != nil,
            let number = self.numberWithSign() {
-            return .expensesTotal("ИТОГ всех расходов за месяц", number)
+            return .expensesTotal(title: "ИТОГ всех расходов за месяц", value: number)
         }
 
         // total
